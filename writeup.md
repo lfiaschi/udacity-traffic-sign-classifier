@@ -12,8 +12,8 @@ The goals / steps of this project are the following:
 [//]: # (Image References)
 
 [image1]: ./plots/training_set_counts.png "Visualization"
-[image2]: ./examples/grayscale.jpg "Grayscaling"
-[image3]: ./examples/random_noise.jpg "Random Noise"
+[image2]: ./plots/random_examples.png "Random Examples"
+[image3]: ./plots/image_transformations.png "Transformations"
 [image4]: ./examples/placeholder.png "Traffic Sign 1"
 [image5]: ./examples/placeholder.png "Traffic Sign 2"
 [image6]: ./examples/placeholder.png "Traffic Sign 3"
@@ -23,7 +23,8 @@ The goals / steps of this project are the following:
 ## Rubric Points
 
 Here I will consider the [rubric points](https://github.com/lfiaschi/udacity-traffic-sign-classifier/blob/master/Traffic_Sign_Classifier.ipynb)
-individually and describe how I addressed each point in my implementation. The implemetation and the project writeup can be found here to my [project code](https://github.com/lfiaschi/udacity-traffic-sign-classifier/blob/master/Traffic_Sign_Classifier.ipynb)
+individually and describe how I addressed each point in my implementation. The implementation and the project writeup 
+can be found here to my [project code](https://github.com/lfiaschi/udacity-traffic-sign-classifier/blob/master/Traffic_Sign_Classifier.ipynb)
 
 ---
 
@@ -32,51 +33,55 @@ individually and describe how I addressed each point in my implementation. The i
 I used the pandas library to calculate summary statistics of the traffic
 signs data set:
 
-* The size of training set is ?
-* The size of the validation set is ?
-* The size of test set is ?
-* The shape of a traffic sign image is ?
-* The number of unique classes/labels in the data set is ?
+* The size of training set is 34799
+* The size of the validation set is 4410
+* The size of test set is 12630
+* The shape of a traffic sign image is (32, 32, 3)
+* The number of unique classes/labels in the data set is 43
 
-Here is an exploratory visualization of the data set. It is a bar chart showing how the data is ditributed across the different labeles.
+Here is an exploratory visualization of the data set. It is a bar chart showing how the data is 
+ditributed across the different labels.
 
 ![alt text][image1]
 
-The average number of training examples per class is 809, the minimum is 180 and the maximum 2010, hence some labels are one order of magnitude more abundant than others.
+The average number of training examples per class is 809, the minimum is 180 and the maximum 2010, 
+hence some labels are one order of magnitude more abundant than others.
 
 Most common signs:
-'Speed limit (50km/h)'  train samples: 2010
-'Speed limit (30km/h)'  train samples: 1980
-'Yield'  train samples: 1920
-'Priority road'  train samples: 1890
-'Keep right'  train samples: 1860
-'No passing for vehicles over 3.5 metric tons'  train samples: 1800
-'Speed limit (70km/h)'  train samples: 1770
-'Speed limit (80km/h)'  train samples: 1650
-'Road work'  train samples: 1350
-'No passing'  train samples: 1320
+* `Speed limit (50km/h)`  train samples: 2010
+* `Speed limit (30km/h)`  train samples: 1980
+* `Yield`  train samples: 1920
+* `Priority road`  train samples: 1890
+* `Keep right`  train samples: 1860
 
 
 Most rare signs:
-'Speed limit (20km/h)'  train samples: 180
-'Dangerous curve to the left'  train samples: 180
-'Go straight or left'  train samples: 180
-'Pedestrians'  train samples: 210
-'End of all speed and passing limits'  train samples: 210
-'End of no passing'  train samples: 210
-'End of no passing by vehicles over 3.5 metric tons'  train samples: 210
-'Road narrows on the right'  train samples: 240
-'Bicycles crossing'  train samples: 240
-'Double curve'  train samples: 270
 
-Here is an visualization of some 10 randomly picked training examples for each class. As we can see, even within each class there is a high variability in appearance different to different weather conditions, rotations of the sign and time of the day.
+* `Speed limit (20km/h)`  train samples: 180
+* `Dangerous curve to the left`  train samples: 180
+* `Go straight or left`  train samples: 180
+* `Pedestrians`  train samples: 210
+* `End of all speed and passing limits`  train samples: 210
+
+Here is an visualization of some 10 randomly picked training examples for each class. 
+As we can see, within each class there is a high variability in appearance due to different 
+weather conditions, time of the day and image angle.
+
+![alt text][image2]
+
+---
 
 ## Design and Test a Model Architecture
 
 #### Question 1:
 *Describe how you preprocessed the data. Why did you choose that technique?*
 ##### Answer
-Following a published baseline on this model I applied normalization and transformations. Images were transformed in the YUV space [published baseline model on this problem](http://yann.lecun.com/exdb/publis/pdf/sermanet-ijcnn-11.pdf) and adjusted by histogram stetching and by increasing sharpness. Finally only the Y channel was selected as in some preliminary experiements full color images seem to confuse the classifier (as also reported in the published baseline), the latter effect however is lucky to depend on the network architecure, as in the long term we would intuitively expect to have networks trained with full color images to perform better.
+Following a [published baseline model on this problem](http://yann.lecun.com/exdb/publis/pdf/sermanet-ijcnn-11.pdf) 
+I applied similar normalization and image enhancements . Images were transformed in the YUV space and adjusted by 
+histogram sketching and by increasing sharpness.  Finally only the Y channel was selected as in some preliminary 
+experiments full color images seem to confuse the classifier (as also reported in the published baseline), 
+the latter effect however may depend on the network architecture, as in the long term we would intuitively expect 
+to have networks trained with full color images to perform better.
 
 Here is an example of an original image and the transformed image.
 
