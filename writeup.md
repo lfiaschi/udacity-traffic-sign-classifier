@@ -14,9 +14,9 @@ The goals / steps of this project are the following:
 [image1]: ./plots/training_set_counts.png "Visualization"
 [image2]: ./plots/random_examples.png "Random Examples"
 [image3]: ./plots/image_transformations.png "Transformations"
-[image4]: ./examples/placeholder.png "Traffic Sign 1"
-[image5]: ./examples/placeholder.png "Traffic Sign 2"
-[image6]: ./examples/placeholder.png "Traffic Sign 3"
+[image4]: ./plots/augmented_img_example.png "Augmentation"
+[image5]: ./plots/learning_curve.png "Learning Curve"
+[image6]: ./plots/new_images.png "New Images"
 [image7]: ./examples/placeholder.png "Traffic Sign 4"
 [image8]: ./examples/placeholder.png "Traffic Sign 5"
 
@@ -87,13 +87,26 @@ Here is an example of an original image and the transformed image.
 
 ![alt text][image3]
 
-The difference between the original data set and the augmented data set is the following is the reduced level of  noise and number of channels.
+Hence the difference between the original data set and the augmented data set is the following is the reduced level of noise 
+and number of channels.
 
 
 #### Question 2:
-*Describe how you set up the training, validation and testing data for your model. Optional: If you generated additional data, how did you generate the data? Why did you generate the data? What are the differences in the new dataset (with generated data) from the original dataset?*
+*Describe how you set up the training, validation and testing data for your model. 
+Optional: If you generated additional data, how did you generate the data? Why did you generate the data? 
+What are the differences in the new dataset (with generated data) from the original dataset?*
 ##### Answer:
-All images were processed by transform_img function as discribed in the question 1. Training test and validation set were provided in the exercise. Training set was also augmented by generating 5 additional images from every given image. Images were augmented by augment_img function. The process consists of random rotation around image center (random value between -15 and 15 deg) and random vertical stretching (as the simplest way to simulate different viewing angle) by random value up to 40 %.
+
+All images were processed by transform_img function as discribed in the question 1. 
+Training test and validation set were provided in the exercise. 
+Training set was also augmented by generating 5 additional images from every given image.
+Images were augmented by `augment_img function`. The process consists of random rotation around image center 
+(random value between -15 and 15 deg) and random vertical stretching (as the simplest way to simulate different 
+viewing angle) by random value up to `40 %`.
+
+An example of an image aftern augmentation is shown below:
+
+![alt text][image4]
 
 #### Question 3:
 
@@ -104,14 +117,20 @@ My final model consisted of the following layers:
 
 | Layer         		|     Description	        					|
 |:---------------------:|:---------------------------------------------:|
-| Input         		| 32x32x1 Y channe image   						|
-| Convolution 3x3     	| 1x1 stride, same padding, outputs 32x32x64 	|
-| RELU					|												|
+| Input         		| 32x32x1 Y channel image   				    |
+| Convolution 5x5    	| 1x1 stride, valid padding, outputs 28x28x6 	|
+| Relu					|												|
 | Max pooling	      	| 2x2 stride,  outputs 16x16x64 				|
-| Convolution 3x3	    | etc.      									|
-| Fully connected		| etc.        									|
-| Softmax				| etc.        									|
-|						|												|
+| Convolution 5x5	    | 1x1 stride, valid padding, outputs 14x14x6    |
+| Relu					|												|
+| Fully connected		| Input 14x14x6 = 400  output 120     			|
+| Relu					|												|
+| droupout      		|   							                |
+| Fully connected		| Input 120  output 84     						|
+| Relu					|												|
+| dropuout				|   									        |
+| Fully connected		| Input 84  output 43     						|
+| Softmax				|												|
 |						|												|
 
 #### Question 4:
@@ -119,7 +138,7 @@ My final model consisted of the following layers:
 
 ##### Answer:
 
-I trained the model using an Adam optimizer , a learning rate of 1e-4 , dropout rate of 0.3 and batch size of 128.
+I trained the model using an Adam optimizer ,  learning rate of 1e-4 , dropout rate of 0.3 and batch size of 128.
 
 
 #### Question 5
@@ -127,23 +146,33 @@ I trained the model using an Adam optimizer , a learning rate of 1e-4 , dropout 
 
 ##### Answer:
 
-To train the model, I started from a a well known architecture (LeNet) because of simplicity of implementation and because it performs well on recognition task with tens of classes (such as carachter recognition). After a few runs with this architecture I noted that the model tended to overfit to the original training set, in fact the learning curve showed that the training error converged to 99% while the validation error was above a truly satisfactory performance. Hence I tested two regularization techniques to improve the results:
+To train the model, I started from a a well known architecture (LeNet) because of simplicity of implementation 
+and because it performs well on recognition task with tens of classes (such as carachter recognition). 
+After a few runs with this architecture I noted that the model tended to overfit to the original training set, 
+in fact the learning curve showed that the training error converged to 99% while the validation error wasn`t giving 
+a satisfactory performance. For this reasons, I tested two regularization techniques to improve the results:
 
 * Data augmentation
 * Dropout
 
-I started trying with an high droput rate 50% and this seemed to slow down overfitting as the model was slower to learn but also achieved a slightly higher accuracy. When added the augmented dataset however I started seing increased performance as the model was now able to learn within a few epocs but at the same time to generalize well on the validation set.
+I started trying with an high dropout rate 50% and this seemed to slow down overfitting: the model was slower to 
+train but also achieved a slightly higher accuracy in the end. 
+However, only When added the augmented dataset I started seeing strong increased performance as the model 
+was now able to learn within a few epochs but at the same time to generalize well on the validation set.
 
-A dropout rate of .30% was selected after a few trial and errors. Training the model overall takes around an hour
+A dropout rate of 30% and a learning rate of 1e-4 
+was selected after a few trial and errors. Training the model overall takes around 6 hours.
 
-Training curves can be seen below, at the end of the curves both training and validation error converge.
+Training curves can be seen below, at the end of the curves both training and validation error converge around 
+a hundred epochs.
 
+![alt text][image5] 
 
 
 My final model results were:
-* training set accuracy of ?
-* validation set accuracy of ?
-* test set accuracy of ?
+* training set accuracy of 97%
+* validation set accuracy of 95%
+* test set accuracy of 93%
 
 ### Test a Model on New Images
 
@@ -153,37 +182,73 @@ My final model results were:
 
 Here are five German traffic signs that I found on the web:
 
-![alt text][image4] ![alt text][image5] ![alt text][image6]
-![alt text][image7] ![alt text][image8]
+![alt text][image6]
 
-The first image might be difficult to classify because ...
+All these images maybe challenging to classify because:
 
+* they include much more background then the training images
+* the background is very different from the one in the training images
+* contains image artifacts such as jpeg compression problems and copyright trademarks
+
+Since these images are not in the right shape accepted by the classifier they were downsampled ans smoothed before 
+applying the `trasnform_img` function
+ 
+ 
 Here are the results of the prediction:
 
-| Image			        |     Prediction	        					|
-|:---------------------:|:---------------------------------------------:|
-| Stop Sign      		| Stop sign   									|
-| U-turn     			| U-turn 										|
-| Yield					| Yield											|
-| 100 km/h	      		| Bumpy Road					 				|
-| Slippery Road			| Slippery Road      							|
+Top 5 Labels for image `Double curve`:
+
+ - `Speed limit (30km/h)` with prob = 0.76 
+ - `End of speed limit (80km/h)` with prob = 0.11 
+ - `End of no passing` with prob = 0.02 
+ - `Speed limit (20km/h)` with prob = 0.02 
+ - `Children crossing` with prob = 0.02 
+
+Top 5 Labels for image `Children crossing`:
+ - `Children crossing` with prob = 0.71 
+ - `Right-of-way at the next intersection` with prob = 0.17 
+ - `Go straight or right` with prob = 0.04 
+ - `Dangerous curve to the right` with prob = 0.04 
+ - `Slippery road` with prob = 0.02 
+
+Top 5 Labels for image `Speed limit (50km/h)`:
+ - `Speed limit (80km/h)` with prob = 0.68 
+ - `Speed limit (50km/h)` with prob = 0.31 
+ - `Speed limit (100km/h)` with prob = 0.01 
+ - `Speed limit (60km/h)` with prob = 0.00 
+ - `Speed limit (30km/h)` with prob = 0.00 
+
+Top 5 Labels for image `Stop`:
+ - `Dangerous curve to the right` with prob = 0.95 
+ - `Keep right` with prob = 0.04 
+ - `Turn left ahead` with prob = 0.01 
+ - `Go straight or right` with prob = 0.00 
+ - `Speed limit (80km/h)` with prob = 0.00 
+
+Top 5 Labels for image `Go straight or left`:
+ - `Turn left ahead` with prob = 0.98 
+ - `Priority road` with prob = 0.01 
+ - `Ahead only` with prob = 0.01 
+ - `Keep right` with prob = 0.00 
+ - `Roundabout mandatory` with prob = 0.00 
+
+Top 5 Labels for image `Speed limit (80km/h)`:
+ - `Speed limit (30km/h)` with prob = 0.74 
+ - `Speed limit (50km/h)` with prob = 0.14 
+ - `Speed limit (120km/h)` with prob = 0.02 
+ - `Speed limit (70km/h)` with prob = 0.02 
+ - `Speed limit (60km/h)` with prob = 0.02 
 
 
-The model was able to correctly guess 4 of the 5 traffic signs, which gives an accuracy of 80%. This compares favorably to the accuracy on the test set of ...
+​
+The model was able to correctly guess 1 of the 6 traffic signs, which gives an accuracy of ~17%. 
+This is very different from the accuracy on the test set but is also comprehensible given the different conditions in
+which these images were take.
 
-####3. Describe how certain the model is when predicting on each of the five new images by looking at the softmax probabilities for each prediction. Provide the top 5 softmax probabilities for each image along with the sign type of each probability. (OPTIONAL: as described in the "Stand Out Suggestions" part of the rubric, visualizations can also be provided such as bar charts)
+For the first and forth image, the model is relatively sure of the predicted label (peaked probability distribution) 
+without however getting close to the right answer. It is to consider that these two images are those most affected by
+the image compression and trademarks artifacts.
 
-The code for making predictions on my final model is located in the 11th cell of the Ipython notebook.
+Prediction of image 2 is correct with a very high confidence.
 
-For the first image, the model is relatively sure that this is a stop sign (probability of 0.6), and the image does contain a stop sign. The top five soft max probabilities were
-
-| Probability         	|     Prediction	        					|
-|:---------------------:|:---------------------------------------------:|
-| .60         			| Stop sign   									|
-| .20     				| U-turn 										|
-| .05					| Yield											|
-| .04	      			| Bumpy Road					 				|
-| .01				    | Slippery Road      							|
-
-
-For the second image ...
+Wile prediction for image 5 and 6 are wrong but the model was able to recognise the type of sign (a speed limit sign)
